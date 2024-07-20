@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"strings"
 	"testing"
 )
@@ -152,4 +153,78 @@ func TestCanMatrixSortWithSort(t *testing.T) {
 			}
 		})
 	}
+}
+
+//nolint:funlen
+//nolint:gocognit
+func BenchmarkCanMatrixSort(b *testing.B) {
+	testName := testCases[1].name
+	testInput := testCases[1].input
+	expectedOutput := testCases[1].expectedOutput
+
+	b.Run("CanMatrixSortWithCycles() "+testName, func(b *testing.B) {
+		reader := strings.NewReader(testInput)
+
+		b.ResetTimer()
+
+		for i := 0; i < b.N; i++ {
+			_, err := reader.Seek(0, io.SeekStart)
+			if err != nil {
+				b.Errorf("unexpected error seek: %v", err)
+			}
+
+			output, err := CanMatrixSortWithCycles(reader)
+			if err != nil {
+				b.Errorf("unexpected error: %v", err)
+			}
+
+			if output != expectedOutput {
+				b.Errorf("received: %v expected: %v", output, expectedOutput)
+			}
+		}
+	})
+
+	b.Run("CanMatrixSortWithMap() "+testName, func(b *testing.B) {
+		reader := strings.NewReader(testInput)
+
+		b.ResetTimer()
+
+		for i := 0; i < b.N; i++ {
+			_, err := reader.Seek(0, io.SeekStart)
+			if err != nil {
+				b.Errorf("unexpected error seek: %v", err)
+			}
+
+			output, err := CanMatrixSortWithMap(reader)
+			if err != nil {
+				b.Errorf("unexpected error: %v", err)
+			}
+
+			if output != expectedOutput {
+				b.Errorf("received: %v expected: %v", output, expectedOutput)
+			}
+		}
+	})
+
+	b.Run("CanMatrixSortWithSort() "+testName, func(b *testing.B) {
+		reader := strings.NewReader(testInput)
+
+		b.ResetTimer()
+
+		for i := 0; i < b.N; i++ {
+			_, err := reader.Seek(0, io.SeekStart)
+			if err != nil {
+				b.Errorf("unexpected error seek: %v", err)
+			}
+
+			output, err := CanMatrixSortWithSort(reader)
+			if err != nil {
+				b.Errorf("unexpected error: %v", err)
+			}
+
+			if output != expectedOutput {
+				b.Errorf("received: %v expected: %v", output, expectedOutput)
+			}
+		}
+	})
 }
